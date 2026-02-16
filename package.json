@@ -1,0 +1,25 @@
+{
+	"name": "@tstibbs/school-calendar",
+	"private": true,
+	"engines": {
+		"node": ">=22",
+		"npm": ">=10"
+	},
+	"type": "module",
+	"dependencies": {
+		"dotenv": "^16.6.1"
+	},
+	"devDependencies": {
+		"@tstibbs/cloud-core-utils": "file:../cloud-core/aws/utils",
+		"aws-cdk": "^2.1018.1",
+		"aws-cdk-lib": "^2.200.1",
+		"esbuild": "^0.25.5",
+		"husky": "^4.2.5",
+		"jest": "^30.0.0",
+		"lint-staged": "^16.1.0",
+		"prettier": "^3.5.3"
+	},
+	"scripts": {
+		"preinstall": "git config core.hooksPath .project/hooks"
+	}
+}
