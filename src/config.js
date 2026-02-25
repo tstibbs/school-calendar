@@ -1,8 +1,7 @@
-import {readFile} from 'node:fs/promises'
-import {join} from 'node:path'
+import {readFileSync} from 'node:fs'
 import YAML from 'yaml'
 
-const configFileContents = await readFile(join(process.cwd(), 'config.yaml'), 'utf8')
+const configFileContents = readFileSync('config.yaml', 'utf8')
 const config = YAML.parse(configFileContents)
 
 export const INPUTS = config.inputs
