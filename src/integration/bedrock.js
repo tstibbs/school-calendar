@@ -1,13 +1,14 @@
 import {BedrockRuntimeClient, ConverseCommand} from '@aws-sdk/client-bedrock-runtime'
 
-import {INPUTS, QUERY_CONFIG} from '../config.js'
+import {INPUTS, PROMPTS, QUERY_CONFIG} from '../config.js'
 
 const MAX_TOKENS = 2000
 
 const client = new BedrockRuntimeClient()
 
-export async function extractFromPdf(inputId, fileBuffer) {
-	const {prompt, modelId} = INPUTS[inputId].extraction
+export async function extractFromPdf(inputId, fileBody) {
+	const {promptId} = INPUTS[inputId].extraction
+	const {text, modelId} = PROMPTS[promptId]
 	const conversation = [
 		{
 			role: 'user',
@@ -17,20 +18,21 @@ export async function extractFromPdf(inputId, fileBuffer) {
 						name: 'target_document',
 						format: 'pdf',
 						source: {
-							bytes: fileBuffer
+							bytes: fileBody
 						}
 					}
 				},
 				{
-					text: prompt
+					text: text
 				}
 			]
 		}
 	]
-	const outputText = await makeRequest(conversation)
+	const outputText = await makeRequest(modelId, conversation)
 	try {
-		const data = JSON.parse(outputText)
-		return data
+		// check that it's valid json, but then return the string so it can be easily written back to S3
+		JSON.parse(outputText)
+		return outputText
 	} catch (e) {
 		console.error(e)
 		console.error(`Response: '${outputText}'`)
@@ -49,12 +51,12 @@ export async function query(prompt) {
 			]
 		}
 	]
-	return await makeRequest(conversation)
+	return await makeRequest(QUERY_CONFIG.modelId, conversation)
 }
 
-async function makeRequest(conversation) {
+async function makeRequest(modelId, conversation) {
 	const command = new ConverseCommand({
-		modelId: QUERY_CONFIG.modelId,
+		modelId: modelId,
 		messages: conversation,
 		inferenceConfig: {
 			maxTokens: MAX_TOKENS
