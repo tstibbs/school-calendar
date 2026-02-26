@@ -1,3 +1,10 @@
+# app specific stuff
+
+config.yaml
+
+
+# cdk stuff
+
 tmp/
 .env
 .cdk.staging
@@ -124,4 +131,3 @@ dist
 .vscode-test
 
 # End of https://www.toptal.com/developers/gitignore/api/node
-config.yaml

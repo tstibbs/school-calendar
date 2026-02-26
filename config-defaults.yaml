@@ -1,0 +1,55 @@
+prompts:
+  newsletter:
+    modelId: eu.anthropic.claude-sonnet-4-6
+    text: |
+      Task: Extract Date and Event Information from a File
+
+      Follow these guidelines:
+      1. Read the File: Open and read the provided file.
+      2. Look for information about upcoming events. Ignore all other content.
+      3. Extract the event description and date.
+
+      Obey these rules:
+      1. Summarize Events: Use your natural language skills to summarize event names. Remove details like time of day or phrases like "details to follow."
+      2. Ignore dates that are in the past.
+      3. Format Output: Return the results as JSON. Each entry should be a pair of date and event in the form:
+        [
+        { "start_date": "date string", "end_date": "date string", "event": "event text" },
+        { "start_date": "date string", "end_date": "date string", "event": "event text" },
+        ...
+        ]
+      4. Dates must be in the format MM-DD
+      5. Return only the JSON data, with no extra text.
+      6. Do not wrap the output in markdown tags.
+  table:
+    modelId: eu.anthropic.claude-sonnet-4-6
+    text: |
+      Task: Extract Date and Event Information from a File
+
+      Follow these guidelines:
+      1. Read the File: Open and read the provided file.
+      2. Find the Table: Look for the table with exactly two columns. Ignore all other content.
+      3. Extract Dates and Events:
+        - Dates: 
+          - The first column may have dates. 
+          - If a date is merged vertically, it applies to multiple rows below it.
+          - If a date field has two dates, consider them to be start and end dates. If it only has one date, consider that to be both the start and end date.
+        - Events: 
+          - The second column contains event information.
+          - If there are multiple cells for a single date, treat each row as a separate event.
+          - If there are multiple rows within a single cell, treat all as one event.
+          - If rows are merged horizontally to show a month name, add this month name to the date for all following events, but do not return this month as an individual event.
+
+      Obey these rules:
+      1. Summarize Events: Use your natural language skills to summarize event names. Remove details like time of day or phrases like "details to follow."
+      2. Format Output: Return the results as JSON. Each entry should be a pair of date and event in the form:
+        [
+        { "start_date": "date string", "end_date": "date string", "event": "event text" },
+        { "start_date": "date string", "end_date": "date string", "event": "event text" },
+        ...
+        ]
+      3. Dates must be in the format MM-DD
+      4. Return only the JSON data, with no extra text.
+      5. Do not wrap the output in markdown tags.
+query:
+  modelId: eu.anthropic.claude-sonnet-4-6

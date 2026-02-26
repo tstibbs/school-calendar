@@ -1,0 +1,10 @@
+
+inputs:
+  school1: # give sensible real name (e.g. 'infants', 'eton', or perhaps a person's name)
+    extraction:
+      promptId: newsletter # reference by name one of the prompts, either from config-defaults.yaml or add a new prompt in this file
+    aliases: # list of other ways the school might be referred to (e.g. by school name or by the name of the child attending)
+      - alias1
+      - alias2
+  school2:
+    # etc
