@@ -1,5 +1,6 @@
 import {S3Client, GetObjectCommand, PutObjectCommand} from '@aws-sdk/client-s3'
 import {extractFromPdf} from './integration/bedrock.js'
+import {updateAllData} from './database/writer.js'
 
 const s3Client = new S3Client()
 
@@ -37,6 +38,8 @@ async function processOneObject(bucket, key) {
 	)
 	const fileBody = await response.Body.transformToByteArray()
 	const output = await extractFromPdf(inputId, fileBody)
+
+	//write this input's data
 	await s3Client.send(
 		new PutObjectCommand({
 			Bucket: bucket,
@@ -45,4 +48,6 @@ async function processOneObject(bucket, key) {
 			ContentType: 'application/json'
 		})
 	)
+	//now update all data
+	await updateAllData(bucket)
 }
