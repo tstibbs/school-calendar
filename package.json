@@ -24,6 +24,7 @@
 		"prettier": "^3.5.3"
 	},
 	"scripts": {
-		"preinstall": "git config core.hooksPath .project/hooks"
+		"preinstall": "git config core.hooksPath .project/hooks",
+		"test": "node --experimental-vm-modules --nolazy ./node_modules/jest/bin/jest.js"
 	}
 }
