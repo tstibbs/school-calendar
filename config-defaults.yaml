@@ -52,4 +52,12 @@ prompts:
       4. Return only the JSON data, with no extra text.
       5. Do not wrap the output in markdown tags.
 query:
-  modelId: eu.anthropic.claude-sonnet-4-6
+  modelId: eu.anthropic.claude-haiku-4-5-20251001-v1:0
+  text: |
+    System: Search for events in the Data that match the User Query. Return a JSON array of the matching event IDs. Do not include any other text. If no events are found, return an empty json array. Note that the user may not give an exact matching string, for example the query "dance" may match "Student Disco" or "contest" might match "competition". The response must only be json. DO NOT wrap the json in markdown tags.
+
+    <data>
+    ${data}
+    </data>
+
+    User Query: ${userInput}

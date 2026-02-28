@@ -35,7 +35,11 @@ export class Reader {
 			})
 			.map(event => event.description)
 
-		return eventsOnDate.join(', ')
+		if (eventsOnDate.length == 0) {
+			return `I can't find any events on ${date}`
+		} else {
+			return eventsOnDate.join(', ')
+		}
 	}
 
 	getDatesByIds(ids) {
