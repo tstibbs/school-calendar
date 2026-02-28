@@ -1,10 +1,9 @@
 /* Building a database using a series of json files is probably not a good idea */
 
-import {INPUTS} from '../config.js'
 import {S3Client, GetObjectCommand, PutObjectCommand} from '@aws-sdk/client-s3'
 
-export const DATA_FILE = 'data.json'
-export const EVENT_VIEW_FILE = 'event_view.json'
+import {INPUTS} from '../config.js'
+import {DATA_FILE, EVENT_VIEW_FILE, ALL_DATA_DIRECTORY} from './dbConstants.js'
 
 const s3Client = new S3Client()
 
@@ -22,7 +21,7 @@ export async function updateAllData(bucket) {
 		await s3Client.send(
 			new PutObjectCommand({
 				Bucket: bucket,
-				Key: `allData/${fileId}`,
+				Key: `${ALL_DATA_DIRECTORY}/${fileId}`,
 				Body: content,
 				ContentType: 'application/json'
 			})
@@ -42,24 +41,30 @@ export async function writeData(reader, writer) {
 			throw e
 		}
 	})
-	const data = Object.fromEntries(await Promise.all(dataPromises))
-	const dataCount = Object.values(data).flat().length
+	const inputToEvents = Object.fromEntries(await Promise.all(dataPromises))
+	const dataCount = Object.values(inputToEvents).flat().length
 	const padSize = Math.ceil(Math.log10(dataCount + 1))
 
 	let eventCount = 0
 	//edit in place to add event ids
-	Object.entries(data).forEach(([inputId, inputData]) => {
+	Object.entries(inputToEvents).forEach(([inputId, inputData]) => {
 		inputData.forEach(obj => {
 			eventCount++
 			const id = String(eventCount).padStart(padSize, '0')
 			obj.eventId = `${inputId}${id}`
+			obj.inputId = inputId
 		})
 	})
-	const idToEvent = Object.fromEntries(
-		Object.values(data)
+	const data = Object.fromEntries(
+		Object.values(inputToEvents)
 			.flat()
-			.map(({eventId, event}) => [eventId, event])
+			.map(event => [event.eventId, event])
+	)
+	const idToEventDescription = Object.fromEntries(
+		Object.values(inputToEvents)
+			.flat()
+			.map(({eventId, description}) => [eventId, description])
 	)
 	await writer(DATA_FILE, JSON.stringify(data))
-	await writer(EVENT_VIEW_FILE, JSON.stringify(idToEvent))
+	await writer(EVENT_VIEW_FILE, JSON.stringify(idToEventDescription))
 }

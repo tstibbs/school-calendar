@@ -14,7 +14,7 @@ function translateData(stringOutput) {
 	const dateData = data.map((event, index) => ({
 		startDate: parseDate(event.start_date),
 		endDate: parseDate(event.end_date),
-		event: event.event
+		description: event.event
 	}))
 	return dateData
 }
