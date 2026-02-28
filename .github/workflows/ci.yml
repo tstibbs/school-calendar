@@ -11,31 +11,14 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-
-      # checkout a dependent project
       - uses: actions/checkout@v4
-        with:
-          repository: tstibbs/cloud-core
-          path: 'cloud-core' # will resolve to /home/runner/work/school-calendar/school-calendar/cloud-core
-
-      # checkout 'this' project
-      - uses: actions/checkout@v4
-        with:
-          path: 'school-calendar' # will resolve to /home/runner/work/school-calendar/school-calendar/school-calendar
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22.x
-      - name: Set up environment
-        run: mkdir cdk.tmp
-        working-directory: school-calendar
-
-      - name: Load cloud-core dependencies
-        run: npm ci
-        working-directory: cloud-core/aws/utils
 
       - run: npm ci
-        working-directory: school-calendar
-    # - run: npm run test
-    #   working-directory: school-calendar
-    # don't run the actual deploy in the CI, but run everything up to here to get the best idea of whether it works
+
+      - run: npm run test
+      
+# don't run the actual deploy in the CI, but run everything up to here to get the best idea of whether it works

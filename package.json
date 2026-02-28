@@ -14,7 +14,6 @@
 		"yaml": "^2.8.2"
 	},
 	"devDependencies": {
-		"@tstibbs/cloud-core-utils": "file:../cloud-core/aws/utils",
 		"aws-cdk": "^2.1018.1",
 		"aws-cdk-lib": "^2.200.1",
 		"esbuild": "^0.25.5",
