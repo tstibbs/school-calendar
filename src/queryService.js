@@ -20,7 +20,7 @@ export class QueryService {
 		console.log(`Response: ${response}`)
 		const ids = []
 		try {
-			ids.push.apply(JSON.parse(response))
+			ids.push(...JSON.parse(response))
 		} catch (e) {
 			console.error("Bedrock response wasn't json:")
 			console.error(response)

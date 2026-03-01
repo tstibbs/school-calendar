@@ -1,11 +1,4 @@
-import {DATA_FILE} from './write.js'
-
-export async function writeData(stringExtractedOutput, writer) {
-	const dateData = translateData(stringExtractedOutput)
-	await writer(DATA_FILE, dateData)
-}
-
-function translateData(stringOutput) {
+export function translateData(stringOutput) {
 	const data = JSON.parse(stringOutput)
 	if (!data.every(event => goodDate(event.start_date) && goodDate(event.end_date) && goodString(event.event))) {
 		console.error(stringOutput)
