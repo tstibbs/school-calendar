@@ -27,36 +27,24 @@ export class Reader {
 
 	getEventsByDate(date) {
 		const searchDate = new Date(date)
-		const eventsOnDate = Object.values(this.#data)
-			.filter(event => {
-				const startDate = new Date(event.startDate)
-				const endDate = new Date(event.endDate)
-				return searchDate >= startDate && searchDate <= endDate
-			})
-			.map(event => event.description)
-
-		if (eventsOnDate.length == 0) {
-			return `I can't find any events on ${date}`
-		} else {
-			return eventsOnDate.join(', ')
-		}
+		const eventsOnDate = Object.values(this.#data).filter(event => {
+			const startDate = new Date(event.startDate)
+			const endDate = new Date(event.endDate)
+			return searchDate >= startDate && searchDate <= endDate
+		})
+		return eventsOnDate
 	}
 
 	getDatesByIds(ids) {
-		const dateStrings = ids
+		return ids
 			.map(id => {
 				const event = this.#data[id]
 				if (!event) {
 					return null
 				}
-				if (event.startDate === event.endDate) {
-					return `${event.description} on ${event.startDate}`
-				}
-				return `${event.description} starting on ${event.startDate}`
+				return event
 			})
 			.filter(Boolean)
-
-		return dateStrings.join(', ')
 	}
 
 	getEventViewString() {
