@@ -1,0 +1,45 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-GB": {
+          "name": "School Calendar",
+          "summary": "ALPHA: checks your school's calendar",
+          "description": "ALPHA: checks your school's calendar",
+          "keywords": [
+            "calendar",
+            "schedule",
+            "events",
+            "school"
+          ],
+          "examplePhrases": [
+            "Alexa, open School",
+            "What is happening today?",
+            "When is the school play?"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Please test using the provided intent samples.",
+      "category": "ORGANIZERS_AND_ASSISTANTS",
+      "distributionCountries": [
+        "GB"
+      ]
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "containsAds": false,
+      "isChildDirected": false,
+      "isExportCompliant": false,
+      "usesPersonalInfo": false
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {
+          "uri": "dummy - will be overridden in cdk"
+        }
+      }
+    }
+  }
+}

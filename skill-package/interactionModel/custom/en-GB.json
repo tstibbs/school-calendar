@@ -1,0 +1,71 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "school",
+            "intents": [
+                {
+                    "name": "GetEventsByDateIntent",
+                    "slots": [
+                        {
+                            "name": "eventDate",
+                            "type": "AMAZON.DATE"
+                        }
+                    ],
+                    "samples": [
+                        "What is happening {eventDate}",
+                        "What is happening on {eventDate}",
+                        "What is happening on the {eventDate}",
+                        "What is going on on the {eventDate}",
+                        "What events are {eventDate}",
+                        "What events are on {eventDate}",
+                        "What events are happening on {eventDate}",
+                        "What events are happening on the {eventDate}",
+                        "Is there anything on {eventDate}",
+                        "Is there anything on the {eventDate}",
+                        "Do I have anything on {eventDate}",
+                        "Do I have anything happening on {eventDate}",
+                        "Do I have anything going on on {eventDate}"
+                    ]
+                },
+                {
+                    "name": "GetEventByNameIntent",
+                    "slots": [
+                        {
+                            "name": "eventName",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "When is {eventName}",
+                        "When is the {eventName}",
+                        "When is my {eventName}",
+                        "How long until {eventName}",
+                        "How long until the {eventName}",
+                        "How long until my {eventName}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                }
+            ],
+            "types": []
+        }
+    }
+}

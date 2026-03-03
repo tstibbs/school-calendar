@@ -94,6 +94,8 @@ const ErrorHandler = {
 		return true
 	},
 	handle(handlerInput, error) {
+		console.log('handlerInput.requestEnvelope')
+		console.log(handlerInput?.requestEnvelope)
 		console.log(`Error handled:`)
 		console.log(error)
 		const speakOutput = 'Sorry, I had trouble doing what you asked. Please try again.'
