@@ -1,10 +1,19 @@
 import {getRequestType, getIntentName, getSlotValue, SkillBuilders} from 'ask-sdk-core'
 import {QueryService} from './queryService.js'
 
+const SIX_HOURS_IN_MILLIS = 6 * 60 * 60 * 1000
+let queryService = null
+let lastQueryServiceLoadTime = 0
+
 //load on demand to ensure fresh info
 async function loadQueryService() {
-	const queryService = new QueryService()
-	await queryService.load()
+	if (queryService == null || lastQueryServiceLoadTime < Date.now() - SIX_HOURS_IN_MILLIS) {
+		// most likely the lambda will have been recycled in under six hours, so it's unlikely we'll ever actually refresh the data within a lambda instance, but this is a reasonable backstop just in case.
+		const newQueryService = new QueryService()
+		await newQueryService.load()
+		queryService = newQueryService
+		lastQueryServiceLoadTime = Date.now()
+	}
 	return queryService
 }
 
@@ -22,6 +31,9 @@ const GetEventsByDateIntentHandler = {
 	async handle(handlerInput) {
 		const queryService = await loadQueryService()
 		const date = getSlotValue(handlerInput.requestEnvelope, 'eventDate')
+		if (date == null || typeof date !== 'string' || date.length == 0) {
+			throw new Error(`'${data}' is not a valid date, expected ISO 8601 format (YYYY-MM-DD)`)
+		}
 		const speechOutput = await queryService.dateQuery(date)
 		return handlerInput.responseBuilder
 			.speak(speechOutput)
@@ -44,6 +56,9 @@ const GetEventByNameIntentHandler = {
 	async handle(handlerInput) {
 		const queryService = await loadQueryService()
 		const eventName = getSlotValue(handlerInput.requestEnvelope, 'eventName')
+		if (eventName == null || typeof eventName !== 'string' || eventName.length == 0) {
+			throw new Error(`No 'eventName' provided.`)
+		}
 		const speechOutput = await queryService.searchQuery(eventName)
 		return handlerInput.responseBuilder
 			.speak(speechOutput)
