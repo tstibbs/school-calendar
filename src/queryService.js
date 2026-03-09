@@ -16,18 +16,26 @@ export class QueryService {
 	}
 
 	async searchQuery(userInput) {
+		const ids = this.#queryBedrockForEventIds(userInput)
+		return this.handleEventIds(ids)
+	}
+
+	async #queryBedrockForEventIds(userInput) {
 		const data = await this.#reader.getEventViewString()
 		const prompt = QUERY_CONFIG.text.replaceAll('${data}', data).replaceAll('${userInput}', userInput)
 		const response = await query(prompt)
 		console.log(`Response: ${response}`)
-		const ids = []
 		try {
-			ids.push(...JSON.parse(response))
+			return [...JSON.parse(response)]
 		} catch (e) {
 			console.error("Bedrock response wasn't json:")
 			console.error(response)
 			throw e
 		}
+	}
+
+	//function non-private to make it easier to test without calling bedrock
+	handleEventIds(ids) {
 		if (ids.length == 0) {
 			return `No events matching that description`
 		} else {
@@ -46,10 +54,13 @@ export class QueryService {
 			const summaries = Object.entries(groupedData)
 				.flatMap(([inputId, descriptions]) => {
 					return Object.entries(descriptions).map(([description, events]) => {
-						const dates = events
-							.map(e => (e.startDate === e.endDate ? e.startDate : `starting ${e.startDate}`))
-							.join(', ')
-						return `${description} on ${dates} at ${inputId}`
+						const singleDates = events.filter(e => e.startDate == e.endDate).map(e => formatDateForSpeech(e.startDate))
+						const dateRanges = events
+							.filter(e => e.startDate != e.endDate)
+							.map(e => `starting ${formatDateForSpeech(e.startDate)}`)
+						const dates = [...singleDates, ...dateRanges].join(', ')
+						const joiner = singleDates.length == 0 ? 'on ' : ''
+						return `${description} ${joiner}${dates} at ${inputId}`
 					})
 				})
 				.join('. ')
@@ -62,7 +73,7 @@ export class QueryService {
 		// Alexa typically provides dates in ISO 8601 format (YYYY-MM-DD).
 		const eventsOnDate = this.#reader.getEventsByDate(date)
 		if (eventsOnDate.length == 0) {
-			return `I can't find any events on ${date}`
+			return `I can't find any events on ${formatDateForSpeech(date)}`
 		} else {
 			const groupedData = eventsOnDate.reduce((acc, event) => {
 				const {inputId, description} = event
@@ -82,4 +93,27 @@ export class QueryService {
 			return descriptions
 		}
 	}
+}
+
+function formatDateForSpeech(dateAsString) {
+	const date = new Date(dateAsString) //TODO this might be off by a day in DST?
+	const day = date.getDate()
+	const month = date.toLocaleString('en-GB', {month: 'long'})
+	const getSuffix = d => {
+		if (d == 11 || d == 12 || d == 13) {
+			//why must the english language be so stupid!?
+			return 'th'
+		}
+		switch (d % 10) {
+			case 1:
+				return 'st'
+			case 2:
+				return 'nd'
+			case 3:
+				return 'rd'
+			default:
+				return 'th'
+		}
+	}
+	return `${day}${getSuffix(day)} of ${month}`
 }
