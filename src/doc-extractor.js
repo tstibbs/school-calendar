@@ -1,7 +1,9 @@
 import {S3Client, GetObjectCommand, PutObjectCommand} from '@aws-sdk/client-s3'
-import {extractFromPdf} from './integration/bedrock.js'
+import {extractEventsFromPdf as aiPdfExtract, extractEventsFromText as aiTextExtract} from './integration/bedrock.js'
 import {updateAllData} from './database/writer.js'
 import {translateData} from './database/translate.js'
+import {extractText as dumbPdfExtract, countPages} from './formats/pdf.js'
+import {CONFIG} from './config.js'
 
 const s3Client = new S3Client()
 
@@ -38,9 +40,21 @@ async function processOneObject(bucket, key) {
 		})
 	)
 	const fileBody = await response.Body.transformToByteArray()
-	const output = await extractFromPdf(inputId, fileBody)
-	console.log(output)
+	const pageCount = await countPages(fileBody)
+	let output
+	if (pageCount > CONFIG.pageLimitForAi) {
+		// pages cost around $0.01 per page in claude sonnet, so cost can add up quickly
+		console.log(`High page count (${pageCount}), so falling back to local text extract followed by AI text parsing`)
+		const pageText = await dumbPdfExtract(fileBody)
+		output = await aiTextExtract(inputId, pageText)
+	} else {
+		console.log(`Low page count (${pageCount}), using full AI pdf parsing`)
+		output = await aiPdfExtract(inputId, fileBody)
+	}
 	const data = translateData(output)
+
+	console.log(output)
+	console.log(JSON.stringify(data))
 
 	//write this input's data
 	await s3Client.send(

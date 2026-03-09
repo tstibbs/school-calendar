@@ -61,3 +61,5 @@ query:
     </data>
 
     User Query: ${userInput}
+config:
+  pageLimitForAi: 4
