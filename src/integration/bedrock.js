@@ -92,6 +92,9 @@ async function makeRequest(modelId, conversation) {
 	})
 
 	const response = await client.send(command)
+	console.log(
+		`Token usage: input=${response?.usage?.inputTokens}, output=${response?.usage?.outputTokens}, total=${response?.usage?.totalTokens}`
+	)
 	const outputText = response.output.message.content[0].text
 	return outputText
 }
