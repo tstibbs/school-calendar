@@ -16,7 +16,7 @@ export class QueryService {
 	}
 
 	async searchQuery(userInput) {
-		const ids = this.#queryBedrockForEventIds(userInput)
+		const ids = await this.#queryBedrockForEventIds(userInput)
 		return this.handleEventIds(ids)
 	}
 
