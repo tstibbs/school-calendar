@@ -9,35 +9,39 @@ jest.doMock('@aws-sdk/client-s3', () => ({
 
 import {DATA_FILE, EVENT_VIEW_FILE} from '../../src/database/dbConstants.js'
 
+const event1 = {
+	startDate: '2025-06-07',
+	endDate: '2025-06-07',
+	eventId: 'input11',
+	description: 'abc',
+	inputId: 'input1'
+}
+const event2 = {
+	startDate: '2025-06-03',
+	endDate: '2025-06-10',
+	eventId: 'input12',
+	description: 'def',
+	inputId: 'input1'
+}
+const event3 = {
+	startDate: '2025-06-07',
+	endDate: '2025-06-07',
+	eventId: 'input13',
+	description: 'abc2',
+	inputId: 'input1'
+}
+const event4 = {
+	startDate: '2025-12-01',
+	endDate: '2025-12-01',
+	eventId: 'input24',
+	description: 'ghi',
+	inputId: 'input2'
+}
 const data = {
-	input11: {
-		startDate: '2025-06-07',
-		endDate: '2025-06-07',
-		eventId: 'input11',
-		description: 'abc',
-		inputId: 'input1'
-	},
-	input12: {
-		startDate: '2025-06-03',
-		endDate: '2025-06-10',
-		eventId: 'input12',
-		description: 'def',
-		inputId: 'input1'
-	},
-	input13: {
-		startDate: '2025-06-07',
-		endDate: '2025-06-07',
-		eventId: 'input13',
-		description: 'abc2',
-		inputId: 'input1'
-	},
-	input24: {
-		startDate: '2025-12-01',
-		endDate: '2025-12-01',
-		eventId: 'input24',
-		description: 'ghi',
-		inputId: 'input2'
-	}
+	input11: event1,
+	input12: event2,
+	input13: event3,
+	input24: event4
 }
 const eventsById = {
 	input11: 'abc',
@@ -77,16 +81,16 @@ describe('Reader', () => {
 		await reader.load()
 
 		//single event on date
-		expect(reader.getEventsByDate('2025-12-01')).toBe('ghi')
+		expect(reader.getEventsByDate('2025-12-01')).toEqual([event4])
 		//multiple events on date
-		expect(reader.getEventsByDate('2025-06-07')).toBe('abc, def, abc2')
+		expect(reader.getEventsByDate('2025-06-07')).toEqual([event1, event2, event3])
 
 		//single id matched
-		expect(reader.getDatesByIds(['input11'])).toBe('abc on 2025-06-07')
+		expect(reader.getDatesByIds(['input11'])).toEqual([event1])
 		//multiple ids matched
-		expect(reader.getDatesByIds(['input13', 'input24'])).toBe('abc2 on 2025-06-07, ghi on 2025-12-01')
+		expect(reader.getDatesByIds(['input13', 'input24'])).toEqual([event3, event4])
 		//date range
-		expect(reader.getDatesByIds(['input12'])).toBe('def starting on 2025-06-03')
+		expect(reader.getDatesByIds(['input12'])).toEqual([event2])
 
 		const eventViewString = reader.getEventViewString()
 		expect(eventViewString).toBe(JSON.stringify(eventsById))
