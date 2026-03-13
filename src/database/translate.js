@@ -17,7 +17,9 @@ const goodDate = str => goodString(str) && /\d{1,2}-\d{1,2}/.test(str)
 const goodString = str => str != null && typeof str === 'string' && str.length > 0
 
 const parseDate = str => {
-	const timeNow = new Date().getTime()
+	const dateNow = new Date()
+	dateNow.setDate(dateNow.getDate() - 14)
+	const timeNow = dateNow.getTime() // actually time two week's ago, to prevent slight parsing delays pushing things into next year unnecessarily
 	const yearNow = new Date().getFullYear()
 	let fullDate = new Date(yearNow + '-' + str)
 	if (fullDate.getTime() < timeNow) {
