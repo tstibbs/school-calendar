@@ -1,8 +1,22 @@
-import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs'
+// Polyfill DOMMatrix for Lambda/Node.js environment
+import DOMMatrix from '@thednp/dommatrix'
+global.DOMMatrix = DOMMatrix
+
+//use the legacy build to avoid additional browser-only API conflicts.
+const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs')
+//Forcing 'false' (fake worker) avoids worker_thread overhead in Lambda.
+pdfjs.GlobalWorkerOptions.workerSrc = './pdf.worker.mjs'
 
 // new Uint8Array(await readFile(path)) etc
 async function parseDoc(pdfData) {
-	const loadingTask = getDocument({data: pdfData.slice(), verbosity: 0})
+	const loadingTask = pdfjs.getDocument({
+		data: pdfData.slice(),
+		verbosity: 0,
+		disableFontFace: true,
+		standardFontDataUrl: './node_modules/pdfjs-dist/standard_fonts/',
+		cMapUrl: './node_modules/pdfjs-dist/cmaps/',
+		cMapPacked: true
+	})
 	const pdf = await loadingTask.promise
 	return pdf
 }

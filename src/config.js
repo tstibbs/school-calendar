@@ -1,11 +1,11 @@
 import {readFileSync} from 'node:fs'
-import YAML from 'yaml'
+import {load} from 'js-yaml'
 import {merge} from 'lodash-es'
 
 const defaults = readFileSync('config-defaults.yaml', 'utf8')
 const customs = readFileSync('config.yaml', 'utf8')
-const defaultConfig = YAML.parse(defaults)
-const customConfig = YAML.parse(customs)
+const defaultConfig = load(defaults)
+const customConfig = load(customs)
 
 const config = merge({}, defaultConfig, customConfig)
 
