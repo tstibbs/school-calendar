@@ -6,5 +6,5 @@ inputs:
     aliases: # list of other ways the school might be referred to (e.g. by school name or by the name of the child attending)
       - alias1
       - alias2
-  school2:
+  #school2:
     # etc
