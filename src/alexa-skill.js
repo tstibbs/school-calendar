@@ -67,7 +67,7 @@ const LaunchRequestHandler = {
 	},
 	handle(handlerInput) {
 		const speakOutput =
-			'Welcome to school Calendar. You can ask about events on a specific date or search for a specific event by name. How can I help?'
+			'Welcome to School Assistant. You can ask about events on a specific date or search for a specific event by name. How can I help?'
 		return handlerInput.responseBuilder.speak(speakOutput).reprompt(speakOutput).getResponse()
 	}
 }

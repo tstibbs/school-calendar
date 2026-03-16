@@ -1,5 +1,5 @@
 {
-	"name": "@tstibbs/school-calendar",
+	"name": "@tstibbs/school-assistant",
 	"private": true,
 	"engines": {
 		"node": ">=22",
