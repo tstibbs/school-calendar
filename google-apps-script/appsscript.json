@@ -1,0 +1,11 @@
+{
+	"timeZone": "Etc/GMT",
+	"dependencies": {},
+	"exceptionLogging": "STACKDRIVER",
+	"oauthScopes": [
+		"https://www.googleapis.com/auth/gmail.readonly",
+		"https://www.googleapis.com/auth/script.external_request",
+		"https://www.googleapis.com/auth/script.scriptapp"
+	],
+	"runtimeVersion": "V8"
+}
