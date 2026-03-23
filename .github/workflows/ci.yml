@@ -17,11 +17,15 @@ jobs:
         with:
           node-version: 22.x
 
-      - run: npm ci
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - run: pnpm install --frozen-lockfile
 
       - name: test preparation
         run: cp config-example.yaml config.yaml
 
-      - run: npm run test
+      - run: pnpm test
       
 # don't run the actual deploy in the CI, but run everything up to here to get the best idea of whether it works
