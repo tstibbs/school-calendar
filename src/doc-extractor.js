@@ -1,5 +1,8 @@
 import {createHash} from 'node:crypto'
+
 import {S3Client, GetObjectCommand, PutObjectCommand} from '@aws-sdk/client-s3'
+import {buildErrorNotifyingLambdaHandler} from '@tstibbs/cloud-core-utils/src/utils/lambda.js'
+
 import {extractEventsFromPdf as aiPdfExtract, extractEventsFromText as aiTextExtract} from './integration/bedrock.js'
 import {updateAllData} from './database/writer.js'
 import {translateData} from './database/translate.js'
@@ -8,7 +11,7 @@ import {CONFIG} from './config.js'
 
 const s3Client = new S3Client()
 
-export const handler = async event => {
+async function handleEvent(event) {
 	const results = event.Records.map(async record => {
 		const bucket = record.s3.bucket.name
 		const key = decodeURIComponent(record.s3.object.key)
@@ -121,3 +124,5 @@ async function hashHasChanged(bucket, hashKey, incomingHash) {
 		}
 	}
 }
+
+export const handler = buildErrorNotifyingLambdaHandler('doc-extractor', handleEvent)
